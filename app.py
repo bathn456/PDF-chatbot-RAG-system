@@ -25,17 +25,21 @@ st.set_page_config(
 )
 
 # --- 2.1 HEADER LAYOUT (Buttons at Top Right) ---
-# We create two columns: one for the title (wide), one for the buttons (narrow)
-col1, col2 = st.columns([6, 1])
+# We create two columns: col1 for the title, col2 for the buttons
+# We give col2 slightly more space to fit two buttons side-by-side
+col1, col2 = st.columns([6, 2])
 
 with col1:
     st.title("🤖 Chat with PDFs")
     st.caption("Built by Batuhan Yılmaz | Powered by Groq Llama 3")
 
 with col2:
-    # REPLACE THESE LINKS WITH YOUR ACTUAL INFO
-    st.link_button("LinkedIn", "https://www.linkedin.com/in/batuhan-y%C4%B1lmaz-20a309232/")
-    st.link_button("📧 Email", "mailto:ybatu42@gmail.com")
+    # Create two small columns INSIDE the right column to place buttons side-by-side
+    btn_col1, btn_col2 = st.columns(2)
+    with btn_col1:
+        st.link_button("LinkedIn", "https://www.linkedin.com/in/batuhan-y%C4%B1lmaz-20a309232/")
+    with btn_col2:
+        st.link_button("📧 Email", "mailto:ybatu42@gmail.com")
 
 # --- 3. HELPER FUNCTION ---
 def parse_groq_stream(stream):
