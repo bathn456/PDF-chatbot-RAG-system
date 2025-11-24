@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from dotenv import load_dotenv  # <--- ADDED BACK
 from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from groq import Groq
@@ -90,4 +90,5 @@ if prompt := st.chat_input("Ask a question about your PDF..."):
         )
         response = st.write_stream(parse_groq_stream(stream))
         
+
     st.session_state.messages.append({"role": "assistant", "content": response})
