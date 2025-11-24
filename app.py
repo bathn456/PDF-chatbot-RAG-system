@@ -1,26 +1,31 @@
 import streamlit as st
 import os
-from dotenv import load_dotenv  # <--- ADDED BACK
+from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter 
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from groq import Groq
 
 # --- 1. SETUP API KEY ---
-# Try loading from .env file (for Localhost)
+# Load environment variables (for local testing)
 load_dotenv()
 
-# Look for key in System Environment (Cloud) OR .env (Local)
+# Get the key from the system (works on Cloud and Local)
 api_key = os.getenv("GROQ_API_KEY")
 
 if not api_key:
     st.error("GROQ_API_KEY not found! If you are running locally, check .env. If on cloud, check Secrets.")
     st.stop()
 
-# --- 2. APP CONFIGURATION ---
-st.set_page_config(page_title="The Frugal Architect", layout="wide")
-st.title("🤖 Chat with PDFs (Free Cloud RAG)")
+# --- 2. APP CONFIGURATION (BRANDING) ---
+st.set_page_config(
+    page_title="Batuhan Yılmaz | AI Architect", 
+    layout="wide"
+)
+
+st.title("🤖 Chat with PDFs - Built by Batuhan Yılmaz")
+st.caption("Powered by Groq Llama 3 & Open Source Embeddings")
 
 # --- 3. HELPER FUNCTION ---
 def parse_groq_stream(stream):
@@ -31,11 +36,11 @@ def parse_groq_stream(stream):
 
 # --- 4. SIDEBAR ---
 with st.sidebar:
-    st.header("Upload Document")
-    uploaded_file = st.file_uploader("Choose a PDF", type="pdf")
+    st.header("Batuhan's PDF Engine")
+    uploaded_file = st.file_uploader("Upload a document", type="pdf")
     
     if uploaded_file and "vector_store" not in st.session_state:
-        st.write("Processing...")
+        st.write("Processing data...")
         with open("temp.pdf", "wb") as f:
             f.write(uploaded_file.getbuffer())
             
@@ -47,7 +52,7 @@ with st.sidebar:
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
         vector_store = FAISS.from_documents(chunks, embeddings)
         st.session_state.vector_store = vector_store
-        st.success("PDF Processed!")
+        st.success("Analysis Complete!")
 
 # --- 5. CHAT LOGIC ---
 if "messages" not in st.session_state:
@@ -57,7 +62,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("Ask a question about your PDF..."):
+if prompt := st.chat_input("Ask Batuhan's AI a question..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -71,7 +76,7 @@ if prompt := st.chat_input("Ask a question about your PDF..."):
     client = Groq(api_key=api_key)
     
     full_prompt = f"""
-    You are a helpful AI assistant. 
+    You are a helpful AI assistant built by Batuhan Yılmaz.
     The following text is the content of a PDF document uploaded by the user.
     Answer the user's question based ONLY on this content.
     
@@ -90,5 +95,4 @@ if prompt := st.chat_input("Ask a question about your PDF..."):
         )
         response = st.write_stream(parse_groq_stream(stream))
         
-
     st.session_state.messages.append({"role": "assistant", "content": response})
