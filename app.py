@@ -24,8 +24,18 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🤖 Chat with PDFs - Built by Batuhan Yılmaz")
-st.caption("Powered by Groq Llama 3 & Open Source Embeddings")
+# --- 2.1 HEADER LAYOUT (Buttons at Top Right) ---
+# We create two columns: one for the title (wide), one for the buttons (narrow)
+col1, col2 = st.columns([6, 1])
+
+with col1:
+    st.title("🤖 Chat with PDFs")
+    st.caption("Built by Batuhan Yılmaz | Powered by Groq Llama 3")
+
+with col2:
+    # REPLACE THESE LINKS WITH YOUR ACTUAL INFO
+    st.link_button("LinkedIn", "https://www.linkedin.com/in/batuhan-y%C4%B1lmaz-20a309232/")
+    st.link_button("📧 Email", "mailto:ybatu42@gmail.com")
 
 # --- 3. HELPER FUNCTION ---
 def parse_groq_stream(stream):
