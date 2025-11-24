@@ -3,7 +3,9 @@ groq
 langchain
 langchain-community
 langchain-huggingface
+langchain-text-splitters
 faiss-cpu
 pypdf
 python-dotenv
+
 protobuf==3.20.3
